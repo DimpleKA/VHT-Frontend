@@ -13,12 +13,13 @@ module.exports = withMT({
   theme: {
     extend: {
       colors: {
-        'custom-maroon0': '#e01212', // Custom color name and value
-        'custom-maroon': '#8f1b1b',
-        'custom-maroon2': '#6d0101',
-        'custom-gray0': '#999',
-        'custom-graybg':'#edeeee',
-        'cutom-green':'#71a113',
+        'custom-pinkblue': '#bd55ff', // linear gradient
+        'custom-blue': '#5573ff', // linear gradient
+        'custom-lightpink': '#c86fff',  // icons color chatbot color
+        'custom-orange': '#ff9f67',  //buttons
+        'custom-darkBlue':'#4255a4',  //big heading text color h1 h2 
+        'custom-pinkDownGr':'#ef6cff',  //down gradient pink
+        'custom-blueTopGr' : '#5d70ff', //top gradient  blue
       },
     },
   },

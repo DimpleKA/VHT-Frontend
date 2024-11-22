@@ -1,15 +1,40 @@
 import { useState } from 'react'
-
+import { BrowserRouter as Router, Routes,Route } from 'react-router-dom'
 import './App.css'
+import Navbar from './Components/Navbar'
+import Home from './Components/Home'
+import Footer from './Components/Footer'
+import Loader from './Components/Loader'
+
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
 <>
-<h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+
+<Router>
+
+   
+        <Routes>
+          <Route path="/" element={<Loader />} />
+          <Route path="/home" element={
+            <>
+              <Navbar />
+              <Home />
+              <Footer />
+            </>
+          } />
+          <Route path="/patientlogin" element={
+            <>
+              <Navbar />
+              <Footer />
+            </>
+          } />
+  </Routes>
+
+</Router>
+
 </>
   )
 }
