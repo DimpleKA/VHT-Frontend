@@ -26,21 +26,21 @@ function App() {
         <Route
           path="/home"
           element={
-            !loggedInUser.isLoggedIn ? <Navigate to="/users" /> : <LoginButton />
+            loggedInUser.isLoggedIn ? <Navigate to="/users" /> : <LoginButton />
           }
         />
 
         <Route
           path="/chat/:userId"
           element={
-            !loggedInUser.isLoggedIn ? <ChatPage /> : <LoginButton />
+            loggedInUser.isLoggedIn ? <ChatPage /> : <LoginButton />
           }
         />
 
         <Route
           path="/users"
           element={
-            !loggedInUser.isLoggedIn ? <Users /> : <LoginButton />
+            loggedInUser.isLoggedIn ? <Users /> : <LoginButton />
           }
         />
 
