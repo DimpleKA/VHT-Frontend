@@ -1,42 +1,58 @@
-import { useState } from 'react'
-import { BrowserRouter as Router, Routes,Route } from 'react-router-dom'
-import './App.css'
-import Navbar from './Components/Navbar'
-import Home from './Components/Home'
-import Footer from './Components/Footer'
-import Loader from './Components/Loader'
-
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import './App.css';
+import Navbar from './Components/Navbar';
+import Home from './Components/Home';
+import Footer from './Components/Footer';
+import Loader from './Components/Loader';
+import ChatPage from './Components/Chat/ChatPage.jsx';
+import Users from './Components/Users/Users.jsx';
+import LoginButton from './Components/Outhzero/LoginButton.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Correct useSelector for accessing Redux state
+  const loggedInUser = useSelector((state) => state.login);
 
   return (
-<>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Loader />} />
 
-<Router>
+        {/* Conditional Rendering based on login status */}
+        <Route
+          path="/home"
+          element={
+            loggedInUser.isLoggedIn ? <Navigate to="/users" /> : <LoginButton />
+          }
+        />
 
-   
-        <Routes>
-          <Route path="/" element={<Loader />} />
-          <Route path="/home" element={
+        <Route
+          path="/chat/:userId"
+          element={
+            loggedInUser.isLoggedIn ? <ChatPage /> : <LoginButton />
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            loggedInUser.isLoggedIn ? <Users /> : <LoginButton />
+          }
+        />
+
+        <Route
+          path="/patientlogin"
+          element={
             <>
               <Navbar />
-              <Home />
               <Footer />
             </>
-          } />
-          <Route path="/patientlogin" element={
-            <>
-              <Navbar />
-              <Footer />
-            </>
-          } />
-  </Routes>
-
-</Router>
-
-</>
-  )
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

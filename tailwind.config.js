@@ -21,6 +21,23 @@ module.exports = withMT({
         'custom-pinkDownGr':'#ef6cff',  //down gradient pink
         'custom-blueTopGr' : '#5d70ff', //top gradient  blue
       },
+
+
+     animation: {
+        'move-up-down': 'moveUpDown 1s infinite', // Define the up/down animation
+      },
+      keyframes: {
+        moveUpDown: {
+          '0%, 100%': {
+            transform: 'translateY(0)', // Start position (no vertical shift)
+          },
+          '50%': {
+            transform: 'translateY(-10px)', // Move up by 10px
+          },
+        },
+      },
+
+      
     },
   },
   plugins:  [
