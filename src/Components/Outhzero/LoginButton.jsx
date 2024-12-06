@@ -24,7 +24,18 @@ const LoginButton = () => {
             }
           );
           console.log("User registered successfully:", response.data);
-
+          localStorage.setItem(
+            'loggedInUser', // Key for localStorage
+            JSON.stringify({
+              isLoggedIn:true,
+              jwt: response.data.token, // Assuming backend returns JWT token
+              name: user.name,
+              profileImg: user.picture,
+              email: user.email,
+              mobile: user.mobile || '', // Optional: If mobile exists
+            })
+          );
+          
           // Dispatch the login action to store user data and token in Redux store
           dispatch(login({
             jwt: response.data.token,  // Assuming backend returns JWT token

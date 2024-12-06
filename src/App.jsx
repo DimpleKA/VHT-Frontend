@@ -12,9 +12,15 @@ import LoginButton from './Components/Outhzero/LoginButton.jsx';
 
 function App() {
   // Correct useSelector for accessing Redux state
-  const loggedInUser = useSelector((state) => state.login);
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
   useEffect(()=>{
+  
 
+    if (loggedInUser) {
+      console.log(loggedInUser.name); // Access properties like `name`
+      console.log(loggedInUser.jwt);  // Access the JWT token
+    }
+    
   },[loggedInUser.isLoggedIn])
 
   return (

@@ -9,6 +9,7 @@ const LogoutButton = () => {
 
   const handleLogout = () => {
     // Dispatch logout action to Redux
+    localStorage.clear();
     dispatch(logout());
 
     // Log out from Auth0
