@@ -1,1 +1,1 @@
-export default BaseUrl = "https://vht-backend.onrender.com";
+export const BaseUrl = "https://vht-backend.onrender.com";

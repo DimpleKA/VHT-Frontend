@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import React, { useEffect } from "react";
-import BaseUrl from "../../BaseUrl";
+import {BaseUrl} from "../../BaseUrl";
 
 const LoginButton = () => {
   const { user, loginWithRedirect, isAuthenticated } = useAuth0();
