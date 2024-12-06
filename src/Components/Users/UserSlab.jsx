@@ -5,6 +5,17 @@ import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import io from 'socket.io-client';
 
+const [loggedInUser, setLoggedInUser] = useState(null);
+
+useEffect(() => {
+  // Parse logged-in user data from localStorage
+  const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (storedUser) {
+    setLoggedInUser(storedUser);
+    console.log("User Loaded:", storedUser);
+  }
+}, []);
+
 const socket = io('http://localhost:3000', {
   query: { userId: "vatsalrishabh001" }, 
 });

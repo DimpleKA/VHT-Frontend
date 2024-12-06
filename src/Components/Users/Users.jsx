@@ -7,6 +7,18 @@ import { BaseUrl } from "../../BaseUrl";
 const Users = () => {
   const [users, setUsers] = useState([]); // State for storing users
 
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  useEffect(() => {
+    // Parse logged-in user data from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (storedUser) {
+      setLoggedInUser(storedUser);
+      console.log("User Loaded:", storedUser);
+    }
+  }, []);
+
+
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {

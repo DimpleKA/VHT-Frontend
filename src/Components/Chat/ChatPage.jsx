@@ -19,11 +19,11 @@ const ChatPage = () => {
 
   useEffect(() => {
     // Parse logged-in user data from localStorage
-    // const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    // if (storedUser) {
-    //   setLoggedInUser(storedUser);
-    //   console.log("User Loaded:", storedUser);
-    // }
+    const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (storedUser) {
+      setLoggedInUser(storedUser);
+      console.log("User Loaded:", storedUser);
+    }
   }, []);
   const { userId } = useParams(); // Extract userId from the route
   const [chatData, setChatData] = useState([
