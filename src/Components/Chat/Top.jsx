@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import LogoutButton from '../Outhzero/LogoutButton'; // Import LogoutButton
 
 const Top = (props) => {
   const [drop, setDrop] = useState("hidden");
   const [iconName, setIconName] = useState(" ");
-  
+
   // Refs to the dropdown and the profile icon to detect clicks outside
   const dropdownRef = useRef(null);
   const profileIconRef = useRef(null);
@@ -35,7 +36,7 @@ const Top = (props) => {
   useEffect(() => {
     // Add event listener for clicks outside of dropdown and profile icon
     document.addEventListener("mousedown", handleClickOutside);
-    
+
     return () => {
       // Cleanup the event listener when component is unmounted
       document.removeEventListener("mousedown", handleClickOutside);
@@ -49,9 +50,7 @@ const Top = (props) => {
         <div className="p-2">
           <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-700 rounded-md">Dashboard</Link>
           <Link to="/profile" className="block px-4 py-2 hover:bg-gray-700 rounded-md">Profile</Link>
-          <button className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md">
-            Logout
-          </button>
+          <LogoutButton /> {/* Use the LogoutButton component */}
         </div>
       </div>
 
@@ -70,12 +69,11 @@ const Top = (props) => {
             <span className="text-white text-xl font-bold">
               {/* User's Profile Image */}
               <img
-  src={props.logUser.profileImg || "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"}
-  alt="User Profile"
-  className="rounded-full w-full h-full object-cover"
-  onError={(e) => e.target.src = "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"} // Fallback image on error
-/>
-
+                src={props.logUser.profileImg || "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"}
+                alt="User Profile"
+                className="rounded-full w-full h-full object-cover"
+                onError={(e) => e.target.src = "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"} // Fallback image on error
+              />
             </span>
           </div>
 
