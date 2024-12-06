@@ -5,9 +5,52 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import io from 'socket.io-client';
+
+// Establish socket connection
+const storedUser = JSON.parse(localStorage.getItem('loggedInUser')); // Replace with actual logged-in user logic
+const fromUserId = storedUser?.userId || "vatsalrishabh001";
+const toUserId = "dimpleka022";
+const socket = io('http://localhost:3000', {
+  query: { userId: fromUserId },
+});
+
+// Listen for online/offline events
+socket.on('user_online', (data) => {
+  console.log(`${data.username} is online`);
+});
+
+socket.on('user_offline', (data) => {
+  console.log(`${data.userId} is offline`);
+});
 
 const Bottom = () => {
+  const [message, setMessage] = useState('');
   const [openIcons, setOpenIcons] = useState(false);
+
+  // Handle message sending
+  const sendMessage = () => {
+    if (message.trim() === '') return; // Prevent sending empty messages
+    const messageData = {
+      content: message,
+      from: fromUserId,
+      to: toUserId,
+      timestamp: new Date(),
+    };
+
+    // Emit message to server
+    socket.emit('send_message', messageData);
+
+    // Optionally clear input after sending
+    setMessage('');
+  };
+
+  // Handle Enter key press
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  };
 
   return (
     <div className="h-[10vh] bg-gradient-to-b from-[#1d1d1d] via-[#222323] to-[#222223] flex items-center px-4 border-t border-white">
@@ -37,11 +80,14 @@ const Bottom = () => {
         <input
           type="text"
           placeholder="Type a message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
           className="flex-1 bg-[#333333] text-white rounded-full px-4 py-2 border border-white focus:outline-none focus:ring focus:ring-[#444444]"
         />
         <div
           className="rounded-full p-2 bg-[#333333] border border-white cursor-pointer hover:bg-[#444444] transition"
-          onClick={() => console.log('Message sent!')}
+          onClick={sendMessage}
         >
           <SendIcon className="text-white" />
         </div>

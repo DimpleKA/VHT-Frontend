@@ -11,10 +11,6 @@ const Top = (props) => {
   const dropdownRef = useRef(null);
   const profileIconRef = useRef(null);
 
-useEffect(()=>{
-  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-},[loggedInUser])
-
   // Toggle dropdown visibility
   const dropDown = () => {
     if (drop === "hidden") {
@@ -73,7 +69,7 @@ useEffect(()=>{
             <span className="text-white text-xl font-bold">
               {/* User's Profile Image */}
               <img
-                src={loggedInUser.profileImg || "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"}
+                src="https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"
                 alt="User Profile"
                 className="rounded-full w-full h-full object-cover"
                 onError={(e) => e.target.src = "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"} // Fallback image on error
@@ -83,10 +79,10 @@ useEffect(()=>{
 
           {/* User Information */}
           <div className="text-white">
-            <h3 className="text-lg font-semibold">{loggedInUser.name}</h3>
+            <h3 className="text-lg font-semibold">Vatsla</h3> {/* Static name for now */}
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-              <p className="text-sm">Online</p>
+              <p className="text-sm">Online</p> {/* Static online status */}
             </div>
           </div>
         </div>

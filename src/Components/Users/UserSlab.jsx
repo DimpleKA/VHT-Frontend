@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3000', {
+  query: { userId: "vatsalrishabh001" }, 
+});
 
 // Styled Badge for Green Dot
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -35,6 +40,27 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 const UserSlab = (props) => {
+const [greenDot, setGreenDot] = useState(false);
+
+  socket.on('user_online', (data) => {
+    console.log(`${data.username} is online`);
+
+    if(props.userId===data.userId){
+      setGreenDot(true);
+    }
+    // Update your UI to show that this user is online
+  });
+  
+  socket.on('user_offline', (data) => {
+    console.log(`${data.userId} is offline`);
+   
+    if(props.userId===data.userId){
+      setGreenDot(false);
+    }
+  });
+
+
+
   const navigate = useNavigate();
 
   // Function to navigate to the chat page
@@ -52,7 +78,7 @@ const UserSlab = (props) => {
         <StyledBadge
           overlap="circular"
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          variant={props.status === 'online' ? 'dot' : undefined}
+          variant={greenDot ? 'dot' : undefined}
         >
           <Avatar alt={props.name} src={props.imgUrl} />
         </StyledBadge>

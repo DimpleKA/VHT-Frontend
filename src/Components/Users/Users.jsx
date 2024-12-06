@@ -1,55 +1,50 @@
-import React from 'react';
-import chatpagebg from '../../assets/chatpagebg.jpg';
-import UserSlab from './UserSlab';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import chatpagebg from "../../assets/chatpagebg.jpg";
+import UserSlab from "./UserSlab";
+import { BaseUrl } from "../../BaseUrl";
 
 const Users = () => {
-  const users = [
-    {
-      userId: "user1",
-      userEmail: "user1@email.com",
-      name: "Aarav Mehta",
-      imgUrl: "https://w0.peakpx.com/wallpaper/794/29/HD-wallpaper-best-whatsapp-dp-boy-walking-alone-birds.jpg",
-      lastSeen: "10:30 AM",
-      lastMessage: "Can we reschedule the meeting?",
-      status: "offline",
-      unreadMessage: false,
-      isTyping:false,
-      
-    },
-    {
-      userId: "user2",
-      userEmail: "user2@email.com",
-      name: "Ishita Sharma",
-      imgUrl: "https://cdn.lazyshop.com/files/9c375535-802d-4631-b284-43b398cad259/product/de06b4dfd0946c2c1c6b50c685c4b09e.jpeg?x-oss-process=style%2Fthumb",
-      lastSeen: "11:45 AM",
-      lastMessage: "Thank you for the update!",
-      status: "online",
-      unreadMessage: true,
-      isTyping:true,
-    },
-    // More users here...
-  ];
+  const [users, setUsers] = useState([]); // State for storing users
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const response = await axios.post(`${BaseUrl}/api/users/allUsers`);
+        console.log(response.data); // Verify the structure of your API response
+        setUsers(response.data.user || []); // Ensure you're setting the correct data
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchAllUsers();
+  }, []); // Empty dependency array ensures the effect runs once
 
   return (
     <div
       className="h-[100vh] flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${chatpagebg})` }}
     >
-      <div className="p-5 text-white backdrop-blur-md w-full max-w-xl h-[97vh] overflow-y-auto hideScrollbar border border-gray-400 rounded-lg shadow-xl ">
-        {users.map((user, index) => (
-          <UserSlab
-            key={index}
-            userId={user.userId}
-            userEmail={user.userEmail}
-            name={user.name}
-            imgUrl={user.imgUrl}
-            lastSeen={user.lastSeen}
-            lastMessage={user.lastMessage}
-            status={user.status}
-            unreadMessage={user.unreadMessage}
-            isTyping={user.isTyping}
-          />
-        ))}
+      <div className="p-5 text-white backdrop-blur-md w-full max-w-xl h-[97vh] overflow-y-auto hideScrollbar border border-gray-400 rounded-lg shadow-xl">
+        {users.length > 0 ? (
+          users.map((user, index) => (
+            <UserSlab
+              key={user._id || index}
+              userId={user.userId}
+              userEmail={user.email}
+              name={user.name}
+              imgUrl={user.profileImg}
+              lastSeen={user.lastSeen || "N/A"}
+              lastMessage={"No messages yet"}
+              status={user.status || "offline"}
+              unreadMessage={false}
+              isTyping={false}
+            />
+          ))
+        ) : (
+          <p>No users available.</p>
+        )}
       </div>
     </div>
   );
