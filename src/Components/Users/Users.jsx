@@ -4,13 +4,16 @@ import chatpagebg from "../../assets/chatpagebg.jpg";
 import UserSlab from "./UserSlab";
 import { BaseUrl } from "../../BaseUrl";
 import { timeConversion } from "./Time";
+import { setUserList } from "../../features/allUserSlice";
+import { useDispatch } from "react-redux";
 
 const Users = () => {
-  const [users, setUsers] = useState([]); // State for storing users
+  const dispatch = useDispatch(); // Redux dispatch
+  const [users, setUsers] = useState([]); // Optional: Local state
   const [loggedInUser, setLoggedInUser] = useState(null);
 
+  // Fetch logged-in user from localStorage
   useEffect(() => {
-    // Parse logged-in user data from localStorage
     const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (storedUser) {
       setLoggedInUser(storedUser);
@@ -18,33 +21,30 @@ const Users = () => {
     }
   }, []);
 
+  // Fetch all users from API
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
         const response = await axios.post(`${BaseUrl}/api/users/allUsers`);
         const usersData = response.data.user || [];
 
-        // Convert `lastSeen` time for each user
+        // Format lastSeen for each user
         const updatedUsers = await Promise.all(
-          usersData.map(async (user) => {
-            const formattedLastSeen = user.lastSeen
-              ? await timeConversion(user.lastSeen)
-              : "N/A";
-            return {
-              ...user,
-              lastSeen: formattedLastSeen,
-            };
-          })
+          usersData.map(async (user) => ({
+            ...user,
+            lastSeen: user.lastSeen ? await timeConversion(user.lastSeen) : "N/A",
+          }))
         );
 
-        setUsers(updatedUsers); // Update state with processed users
+        setUsers(updatedUsers); // Update local state
+        dispatch(setUserList(updatedUsers)); // Dispatch to Redux store
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     };
 
     fetchAllUsers();
-  }, []); // Empty dependency array ensures the effect runs once
+  }, [dispatch]); // Added `dispatch` to dependency array
 
   return (
     <div
@@ -53,9 +53,9 @@ const Users = () => {
     >
       <div className="p-5 text-white backdrop-blur-md w-full max-w-xl h-[97vh] overflow-y-auto hideScrollbar border border-gray-400 rounded-lg shadow-xl">
         {users.length > 0 ? (
-          users.map((user, index) => (
+          users.map((user) => (
             <UserSlab
-              key={user._id || index}
+              key={user._id}
               userId={user.userId}
               userEmail={user.email}
               name={user.name}

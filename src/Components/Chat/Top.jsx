@@ -2,12 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import LogoutButton from '../Outhzero/LogoutButton'; // Import LogoutButton
+import { useSelector } from 'react-redux';
 import io from "socket.io-client";
 
 const Top = (props) => {
   const [drop, setDrop] = useState("hidden");
   const [iconName, setIconName] = useState(" ");
   const [greenDot, setGreenDot] = useState(false); // Online status indicator
+  const [allUsers ,setAllUsers] = useState(useSelector((state) => state.allUser?.usersList || [])); // Safeguard for undefined state
+
+  console.log(allUsers + " top jsx se hai sb ka list");
+
+  // Safeguard filter logic in case allUsers is an empty array or undefined
+  const SelectedUser = allUsers?.filter(user => user.userId === props.name) || [];
+  console.log(SelectedUser);
 
   // Refs to the dropdown and the profile icon to detect clicks outside
   const dropdownRef = useRef(null);
@@ -45,43 +53,40 @@ const Top = (props) => {
     };
   }, []);
 
-useEffect(()=>{
+  useEffect(() => {
+    const socket = io("https://vht-backend.onrender.com", {
+      query: { userId: props.loggedInUser }, // Use loggedInUser's userId
+    });
 
-  const socket = io("https://vht-backend.onrender.com", {
-    query: { userId: props.loggedInUser }, // Use loggedInUser's userId
-  });
+    console.log(`Socket initialized for userId: ${props.loggedInUser}`);
 
-  console.log(`Socket initialized for userId: ${props.loggedInUser}`);
+    // Handle online status
+    socket.on("user_online", (data) => {
+      console.log(`${data.username} is online`);
+      if (props.userId === data.userId) {
+        setGreenDot(true);
+        // setIsOnline(true);
+      }
+    });
 
-  // Handle online status
-  socket.on("user_online", (data) => {
-    console.log(`${data.username} is online`);
-    if (props.userId === data.userId) {
-      setGreenDot(true);
-      // setIsOnline(true);
-    }
-  });
+    // Handle offline status
+    socket.on("user_offline", (data) => {
+      console.log(`${data.userId} is offline`);
+      if (props.userId === data.userId) {
+        setGreenDot(false);
+        // setIsOnline(false);
+      }
+    });
 
-  // Handle offline status
-  socket.on("user_offline", (data) => {
-    console.log(`${data.userId} is offline`);
-    if (props.userId === data.userId) {
-      setGreenDot(false);
-      // setIsOnline(false);
-    }
-  });
+    // Cleanup the socket connection on unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, [props.loggedInUser, props.userId]); // Add props dependencies to ensure socket updates on change
 
-  // Cleanup the socket connection on unmount
-  return () => {
-    socket.disconnect();
-  };
-
-
-},[])
-
-
-
-
+  // Safely access SelectedUser properties
+  const user = SelectedUser.length > 0 ? SelectedUser[0] : {};  // Get the first user if exists
+  
   return (
     <>
       {/* Dropdown Menu */}
@@ -108,7 +113,7 @@ useEffect(()=>{
             <span className="text-white text-xl font-bold">
               {/* User's Profile Image */}
               <img
-                src="https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"
+                src={user?.profileImg || "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"}
                 alt="User Profile"
                 className="rounded-full w-full h-full object-cover"
                 onError={(e) => e.target.src = "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-11-358_512.gif"} // Fallback image on error
@@ -118,9 +123,16 @@ useEffect(()=>{
 
           {/* User Information */}
           <div className="text-white">
-            <h3 className="text-lg font-semibold">{props.name}</h3> {/* Static name for now */}
+            <h3 className="text-lg font-semibold">{user?.name}</h3> {/* Static name for now */}
             <div className="flex items-center space-x-2">
-            {greenDot?<> <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div> <p className="text-sm">Online</p> </>:<>offline</>} 
+              {greenDot ? (
+                <>
+                  <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                  <p className="text-sm">Online</p>
+                </>
+              ) : (
+                <p className="text-sm">{user?.lastSeen || 'Last seen: Never'}</p>
+              )}
             </div>
           </div>
         </div>
