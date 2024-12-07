@@ -28,7 +28,7 @@ const Middle = (props) => {
 
         if (response.data.success) {
           setMessages(response.data.messages);
-          console.log(response.data.messages + ' middle messages');
+          console.log(response.data.messages[0] + ' middle messages');
           console.log(response.data + ' middle messages only data');
         } else {
           console.error('Failed to fetch messages');
