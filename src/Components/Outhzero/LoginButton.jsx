@@ -26,6 +26,7 @@ const LoginButton = () => {
           localStorage.setItem(
             "loggedInUser",
             JSON.stringify({
+              userId:response.data.userId,
               isLoggedIn: true,
               jwt: response.data.token, // Assuming JWT token is returned
               name: user.name,

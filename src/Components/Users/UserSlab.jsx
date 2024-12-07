@@ -49,7 +49,7 @@ const UserSlab = (props) => {
   }, []);
 
   useEffect(() => {
-    const socket = io('http://localhost:3000', {
+    const socket = io('https://vht-backend.onrender.com', {
       query: { userId: "vatsalrishabh001" }, 
     });
 
