@@ -17,9 +17,12 @@ function App() {
     if (storedUser) {
       setLoggedInUser(storedUser);
       console.log("User Loaded:", storedUser);
-      console.log("apps js  local stortage:", loggedInUser);
-      console.log("apps js  local stortage:", loggedInUser.isLoggedIn);
     }
+if(loggedInUser){
+  console.log("apps js  local stortage:", loggedInUser);
+  console.log("apps js  local stortage:", loggedInUser.isLoggedIn);
+}
+
   }, []);
 
   return (
