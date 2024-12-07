@@ -1,26 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import io from 'socket.io-client';
 
-const [loggedInUser, setLoggedInUser] = useState(null);
-
-useEffect(() => {
-  // Parse logged-in user data from localStorage
-  const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (storedUser) {
-    setLoggedInUser(storedUser);
-    console.log("User Loaded:", storedUser);
-  }
-}, []);
-
-const socket = io('http://localhost:3000', {
-  query: { userId: "vatsalrishabh001" }, 
-});
-
-// Styled Badge for Green Dot
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
     backgroundColor: '#44b700',
@@ -51,28 +35,43 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 const UserSlab = (props) => {
-const [greenDot, setGreenDot] = useState(false);
-
-  socket.on('user_online', (data) => {
-    console.log(`${data.username} is online`);
-
-    if(props.userId===data.userId){
-      setGreenDot(true);
-    }
-    // Update your UI to show that this user is online
-  });
-  
-  socket.on('user_offline', (data) => {
-    console.log(`${data.userId} is offline`);
-   
-    if(props.userId===data.userId){
-      setGreenDot(false);
-    }
-  });
-
-
-
+  const [greenDot, setGreenDot] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Parse logged-in user data from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (storedUser) {
+      setLoggedInUser(storedUser);
+      console.log("User Loaded:", storedUser);
+    }
+  }, []);
+
+  useEffect(() => {
+    const socket = io('http://localhost:3000', {
+      query: { userId: "vatsalrishabh001" }, 
+    });
+
+    socket.on('user_online', (data) => {
+      console.log(`${data.username} is online`);
+      if (props.userId === data.userId) {
+        setGreenDot(true);
+      }
+    });
+
+    socket.on('user_offline', (data) => {
+      console.log(`${data.userId} is offline`);
+      if (props.userId === data.userId) {
+        setGreenDot(false);
+      }
+    });
+
+    // Cleanup the socket connection on unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, [props.userId]);
 
   // Function to navigate to the chat page
   const gotoChatPage = (userId) => {
