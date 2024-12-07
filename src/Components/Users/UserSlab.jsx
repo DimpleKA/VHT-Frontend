@@ -119,7 +119,7 @@ const UserSlab = (props) => {
       {/* Timestamp and Highlight Dot */}
       <div className="flex flex-col items-end">
         {isOnline?<div className="text-green-600 text-sm">online</div>:<div className="text-gray-400 text-sm">{props.lastSeen}</div>}
-        <div className="text-gray-400 text-sm">{props.lastSeen}</div>
+
         {props.unreadMessage && (
           <div className="w-2.5 h-2.5 bg-yellow-400 rounded-full mt-1"></div>
         )}
