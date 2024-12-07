@@ -33,7 +33,7 @@ const ChatPage = () => {
       className="h-[100vh] flex flex-col bg-cover bg-center"
       style={{ backgroundImage: `url(${chatpagebg})` }}
     >
-      <Top name={logUser.name} />    {/*  we need to display the data of selected user "userId"  and not logUser */}
+      <Top name={userId} />    {/*  we need to display the data of selected user "userId"  and not logUser */}
       <Middle receiver={userId} fromUserId={logUser.userId||"vatsalrishabh002"} />    {/* chat data between logUser and selected User comes in chatData */}
       <Bottom  receiver={userId} fromUserId={logUser.userId||"vatsalrishabh002"}  />        {/* useId of selected User and logUser*/}
     </div>
