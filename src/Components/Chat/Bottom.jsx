@@ -40,7 +40,7 @@ const Bottom = (props) => {
     if (message.trim() === '') return; // Prevent sending empty messages
     const messageData = {
       content: message,
-      from: props.fromUserId,
+      from:fromUserId,
       to: props.receiver,
       timestamp: new Date(),
     };
