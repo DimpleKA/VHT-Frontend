@@ -12,6 +12,15 @@ function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
+
+    // localStorage.setItem(
+    //   "loggedInUser",
+    //   JSON.stringify({
+    //     isLoggedIn: true,
+     
+    //     userId: "vatsalrishabh002",
+    //     mobile:  "8123573669",
+    //   }))
     // Parse logged-in user data from localStorage
     const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (storedUser) {

@@ -22,20 +22,20 @@ const ChatPage = () => {
     const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (storedUser) {
       setLoggedInUser(storedUser);
-      console.log("User Loaded:", storedUser);
+      console.log("User Loaded from ChatPage:", storedUser);
     }
   }, []);
   const { userId } = useParams(); // Extract userId from the route
   const [chatData, setChatData] = useState([]); // State to store chat data
-
+console.log(logUser.userId+"sdf")
   return (
     <div
       className="h-[100vh] flex flex-col bg-cover bg-center"
       style={{ backgroundImage: `url(${chatpagebg})` }}
     >
       <Top name={userId} />    {/*  we need to display the data of selected user "userId"  and not logUser */}
-      <Middle receiver={userId} fromUserId={logUser.userId||"vatsalrishabh002"} />    {/* chat data between logUser and selected User comes in chatData */}
-      <Bottom  receiver={userId} fromUserId={logUser.userId||"vatsalrishabh002"}  />        {/* useId of selected User and logUser*/}
+      <Middle receiver={userId} fromUserId={logUser.userId} />    {/* chat data between logUser and selected User comes in chatData */}
+      <Bottom  receiver={userId} fromUserId={logUser.userId}  />        {/* useId of selected User and logUser*/}
     </div>
   );
 };
