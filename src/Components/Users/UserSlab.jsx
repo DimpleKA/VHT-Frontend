@@ -50,7 +50,7 @@ const UserSlab = (props) => {
 
   useEffect(() => {
     const socket = io('http://localhost:3000', {
-      query: { userId: loggedInUser.userId }, 
+      query: { userId: "vatsalrishabh001" }, 
     });
 
     socket.on('user_online', (data) => {
