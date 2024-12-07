@@ -3,26 +3,26 @@ export const timeConversion = async (serverTime) => {
       // Parse the server time as a Date object
       const serverDate = new Date(serverTime);
   
-      // Convert server time to IST (GMT+5:30)
-      const indianOffset = 5.5 * 60 * 60 * 1000; // Offset in milliseconds
-      const localDate = new Date(serverDate.getTime() + indianOffset);
+      // Get the current date in IST by converting serverDate to the local time zone of India
+      const options = { timeZone: 'Asia/Kolkata', hour12: true, hour: 'numeric', minute: 'numeric' };
+      const formatter = new Intl.DateTimeFormat('en-IN', options);
   
-      // Get the current date in IST
-      const currentISTDate = new Date(new Date().getTime() + indianOffset);
-      const isToday = localDate.toDateString() === currentISTDate.toDateString();
+      // Get formatted time in IST
+      const localTime = formatter.format(serverDate);
   
-      if (isToday) {
+      // Get today's date in IST for comparison
+      const todayIST = new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'numeric', year: 'numeric' }).format(new Date());
+  
+      // Format serverDate to IST
+      const serverISTDate = new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'numeric', year: 'numeric' }).format(serverDate);
+  
+      if (todayIST === serverISTDate) {
         // If the date is today, return the time in hh:mm am/pm format
-        const hours = localDate.getHours();
-        const minutes = localDate.getMinutes().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'pm' : 'am';
-        const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
-  
-        return `${formattedHours}:${minutes} ${ampm}`;
+        return localTime;
       } else {
         // If the date is not today, return it in "date monthName, year" format
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        return localDate.toLocaleDateString('en-IN', options);
+        const longDateOptions = { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'long', year: 'numeric' };
+        return new Intl.DateTimeFormat('en-IN', longDateOptions).format(serverDate);
       }
     } catch (error) {
       console.error('Error converting time:', error);
