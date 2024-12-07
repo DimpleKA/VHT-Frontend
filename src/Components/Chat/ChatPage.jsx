@@ -27,15 +27,17 @@ const ChatPage = () => {
   }, []);
   const { userId } = useParams(); // Extract userId from the route
   const [chatData, setChatData] = useState([]); // State to store chat data
-console.log(logUser.userId+"sdf")
+console.log(logUser.userId+"UserId Chatpage.jsx")
+console.log(logUser.name+"Name Chatpage.jsx")
+console.log(logUser.profileImg+"profile emage Chatpage.jsx")
   return (
     <div
       className="h-[100vh] flex flex-col bg-cover bg-center"
       style={{ backgroundImage: `url(${chatpagebg})` }}
     >
-      <Top name={userId} />    {/*  we need to display the data of selected user "userId"  and not logUser */}
-      <Middle receiver={userId} fromUserId={logUser.userId} />    {/* chat data between logUser and selected User comes in chatData */}
-      <Bottom  receiver={userId} fromUserId={logUser.userId}  />        {/* useId of selected User and logUser*/}
+      <Top name={userId} loggedInUser={logUser.userId} />    {/*  we need to display the data of selected user "userId"  and not logUser */}
+      <Middle receiver={userId}   fromUserId={logUser.userId} />    {/* chat data between logUser and selected User comes in chatData */}
+      <Bottom  receiver={userId}  fromUserId={logUser.userId}  />        {/* useId of selected User and logUser*/}
     </div>
   );
 };

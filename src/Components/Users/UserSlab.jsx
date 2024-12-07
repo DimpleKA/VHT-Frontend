@@ -77,7 +77,7 @@ const UserSlab = (props) => {
       console.log(`${data.userId} is offline`);
       if (props.userId === data.userId) {
         setGreenDot(false);
-        setGreenDot(false);
+        setIsOnline(false);
       }
     });
 

@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import LogoutButton from '../Outhzero/LogoutButton'; // Import LogoutButton
+import io from "socket.io-client";
 
 const Top = (props) => {
   const [drop, setDrop] = useState("hidden");
   const [iconName, setIconName] = useState(" ");
+  const [greenDot, setGreenDot] = useState(false); // Online status indicator
 
   // Refs to the dropdown and the profile icon to detect clicks outside
   const dropdownRef = useRef(null);
@@ -42,6 +44,43 @@ const Top = (props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+useEffect(()=>{
+
+  const socket = io("https://vht-backend.onrender.com", {
+    query: { userId: props.loggedInUser }, // Use loggedInUser's userId
+  });
+
+  console.log(`Socket initialized for userId: ${props.loggedInUser}`);
+
+  // Handle online status
+  socket.on("user_online", (data) => {
+    console.log(`${data.username} is online`);
+    if (props.userId === data.userId) {
+      setGreenDot(true);
+      // setIsOnline(true);
+    }
+  });
+
+  // Handle offline status
+  socket.on("user_offline", (data) => {
+    console.log(`${data.userId} is offline`);
+    if (props.userId === data.userId) {
+      setGreenDot(false);
+      // setIsOnline(false);
+    }
+  });
+
+  // Cleanup the socket connection on unmount
+  return () => {
+    socket.disconnect();
+  };
+
+
+},[])
+
+
+
 
   return (
     <>
@@ -81,8 +120,7 @@ const Top = (props) => {
           <div className="text-white">
             <h3 className="text-lg font-semibold">{props.name}</h3> {/* Static name for now */}
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-              <p className="text-sm">Online</p> {/* Static online status */}
+            {greenDot?<> <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div> <p className="text-sm">Online</p> </>:<>offline</>} 
             </div>
           </div>
         </div>
