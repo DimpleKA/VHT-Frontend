@@ -37,6 +37,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const UserSlab = (props) => {
   const [greenDot, setGreenDot] = useState(false); // Online status indicator
+  const [isOnline, setIsOnline] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null); // Logged-in user data
   const navigate = useNavigate();
 
@@ -67,6 +68,7 @@ const UserSlab = (props) => {
       console.log(`${data.username} is online`);
       if (props.userId === data.userId) {
         setGreenDot(true);
+        setIsOnline(true);
       }
     });
 
@@ -74,6 +76,7 @@ const UserSlab = (props) => {
     socket.on("user_offline", (data) => {
       console.log(`${data.userId} is offline`);
       if (props.userId === data.userId) {
+        setGreenDot(false);
         setGreenDot(false);
       }
     });
@@ -115,6 +118,7 @@ const UserSlab = (props) => {
 
       {/* Timestamp and Highlight Dot */}
       <div className="flex flex-col items-end">
+        {isOnline?<div className="text-green-600 text-sm">online</div>:<div className="text-gray-400 text-sm">{props.lastSeen}</div>}
         <div className="text-gray-400 text-sm">{props.lastSeen}</div>
         {props.unreadMessage && (
           <div className="w-2.5 h-2.5 bg-yellow-400 rounded-full mt-1"></div>
