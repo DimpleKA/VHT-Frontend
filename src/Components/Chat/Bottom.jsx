@@ -14,11 +14,9 @@ const Bottom = (props) => {
   
   // Establish socket connection on mount
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('loggedInUser')); 
-    const fromUserId = storedUser?.userId || "vatsalrishabh001";
-
+  
     const socketConnection = io('https://vht-backend.onrender.com', {
-      query: { userId: fromUserId },
+      query: { userId: props.fromUserId },
     });
 
     setSocket(socketConnection);
@@ -40,7 +38,7 @@ const Bottom = (props) => {
     if (message.trim() === '') return; // Prevent sending empty messages
     const messageData = {
       content: message,
-      from:fromUserId,
+      from:props.fromUserId,
       to: props.receiver,
       timestamp: new Date(),
     };

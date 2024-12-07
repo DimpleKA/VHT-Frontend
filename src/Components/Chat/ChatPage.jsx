@@ -15,7 +15,7 @@ import chatpagebg from '../../assets/chatpagebg.jpg';
 
 
 const ChatPage = () => {
-  const [logUser, setLoggedInUser] = useState(null);
+  const [logUser, setLoggedInUser] = useState("dimpleka021");
 
   useEffect(() => {
     // Parse logged-in user data from localStorage
@@ -35,7 +35,7 @@ const ChatPage = () => {
     >
       <Top  />    {/*  we need to display the data of selected user "userId"  and not logUser */}
       <Middle receiver={userId} />    {/* chat data between logUser and selected User comes in chatData */}
-      <Bottom  receiver={userId}   />        {/* useId of selected User and logUser*/}
+      <Bottom  receiver={userId} fromUserId={logUser.userId||"vatsalrishabh001"}  />        {/* useId of selected User and logUser*/}
     </div>
   );
 };

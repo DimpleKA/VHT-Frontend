@@ -11,12 +11,10 @@ const Middle = (props) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('loggedInUser')); // Replace with actual logged-in user logic
-    const fromUserId = storedUser?.userId || 'vatsalrishabh001';
-
+   
     // Initialize socket
     const newSocket = io('https://vht-backend.onrender.com', {
-      query: { userId: fromUserId },
+      query: { userId:props.fromUserId },
     });
     setSocket(newSocket);
 
@@ -24,7 +22,7 @@ const Middle = (props) => {
     const fetchMessages = async () => {
       try {
         const response = await axios.post(`${BaseUrl}/api/users/viewMessage`, {
-          sender: fromUserId,
+          sender:props.fromUserId,
           receiver: props.receiver,
         });
 
