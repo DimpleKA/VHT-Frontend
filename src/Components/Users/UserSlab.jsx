@@ -50,9 +50,9 @@ const UserSlab = (props) => {
 
   useEffect(() => {
     const socket = io('https://vht-backend.onrender.com', {
-      query: { userId: storedUser?.userId || "vatsalrishabh001" }, 
+      query: { userId:loggedInUser?.userId || "vatsalrishabh001" }, 
     });
-
+console.log(loggedInUser)
     socket.on('user_online', (data) => {
       console.log(`${data.username} is online`);
       if (props.userId === data.userId) {
