@@ -3,10 +3,10 @@ import axios from "axios";
 import chatpagebg from "../../assets/chatpagebg.jpg";
 import UserSlab from "./UserSlab";
 import { BaseUrl } from "../../BaseUrl";
+import { timeConversion } from "./Time";
 
 const Users = () => {
   const [users, setUsers] = useState([]); // State for storing users
-
   const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
@@ -18,13 +18,26 @@ const Users = () => {
     }
   }, []);
 
-
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
         const response = await axios.post(`${BaseUrl}/api/users/allUsers`);
-        console.log(response.data); // Verify the structure of your API response
-        setUsers(response.data.user || []); // Ensure you're setting the correct data
+        const usersData = response.data.user || [];
+
+        // Convert `lastSeen` time for each user
+        const updatedUsers = await Promise.all(
+          usersData.map(async (user) => {
+            const formattedLastSeen = user.lastSeen
+              ? await timeConversion(user.lastSeen)
+              : "N/A";
+            return {
+              ...user,
+              lastSeen: formattedLastSeen,
+            };
+          })
+        );
+
+        setUsers(updatedUsers); // Update state with processed users
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -47,7 +60,7 @@ const Users = () => {
               userEmail={user.email}
               name={user.name}
               imgUrl={user.profileImg}
-              lastSeen={user.lastSeen || "N/A"}
+              lastSeen={user.lastSeen}
               lastMessage={"No messages yet"}
               status={user.status || "offline"}
               unreadMessage={false}
