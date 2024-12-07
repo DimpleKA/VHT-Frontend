@@ -50,7 +50,7 @@ const Middle = (props) => {
     <div className="h-[80vh] overflow-y-scroll bg-transparent p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
       {/* Render messages */}
       {messages.map((message) =>
-        message.sender === props.sender ? (
+        !message.sender === props.sender ? (
           // If the message sender is the logged-in user
           <Right
             key={message._id}
