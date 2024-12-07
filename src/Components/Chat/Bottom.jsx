@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -7,42 +7,47 @@ import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import io from 'socket.io-client';
 
-// Establish socket connection
-const storedUser = JSON.parse(localStorage.getItem('loggedInUser')); // Replace with actual logged-in user logic
-const fromUserId = storedUser?.userId || "vatsalrishabh001";
-const toUserId = "dimpleka022";
-const socket = io('http://localhost:3000', {
-  query: { userId: fromUserId },
-});
-
-// Listen for online/offline events
-socket.on('user_online', (data) => {
-  console.log(`${data.username} is online`);
-});
-
-socket.on('user_offline', (data) => {
-  console.log(`${data.userId} is offline`);
-});
-
-const Bottom = () => {
+const Bottom = (props) => {
   const [message, setMessage] = useState('');
   const [openIcons, setOpenIcons] = useState(false);
+  const [socket, setSocket] = useState(null);
+  
+  // Establish socket connection on mount
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('loggedInUser')); 
+    const fromUserId = storedUser?.userId || "vatsalrishabh001";
+
+    const socketConnection = io('https://vht-backend.onrender.com', {
+      query: { userId: fromUserId },
+    });
+
+    setSocket(socketConnection);
+
+    socketConnection.on('user_online', (data) => {
+      console.log(`${data.username} is online`);
+    });
+
+    socketConnection.on('user_offline', (data) => {
+      console.log(`${data.userId} is offline`);
+    });
+
+    // Cleanup on component unmount
+    return () => socketConnection.disconnect();
+  }, []);
 
   // Handle message sending
   const sendMessage = () => {
     if (message.trim() === '') return; // Prevent sending empty messages
     const messageData = {
       content: message,
-      from: fromUserId,
-      to: toUserId,
+      from: props.fromUserId,
+      to: props.receiver,
       timestamp: new Date(),
     };
 
     // Emit message to server
     socket.emit('send_message', messageData);
-
-    // Optionally clear input after sending
-    setMessage('');
+    setMessage(''); // Clear the input field
   };
 
   // Handle Enter key press
