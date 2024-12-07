@@ -82,7 +82,7 @@ const ChatPage = () => {
       style={{ backgroundImage: `url(${chatpagebg})` }}
     >
       <Top  />    {/*  we need to display the data of selected user "userId"  and not logUser */}
-      <Middle  />    {/* chat data between logUser and selected User comes in chatData */}
+      <Middle receiver={userId} />    {/* chat data between logUser and selected User comes in chatData */}
       <Bottom   />        {/* useId of selected User and logUser*/}
     </div>
   );
