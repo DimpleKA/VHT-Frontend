@@ -6,28 +6,32 @@ import axios from 'axios';
 import { BaseUrl } from '../../BaseUrl';
 import io from 'socket.io-client';
 
-const storedUser = JSON.parse(localStorage.getItem('loggedInUser')); // Replace with actual logged-in user logic
-const fromUserId = storedUser?.userId || "vatsalrishabh001";
-
-const socket = io('https://vht-backend.onrender.com', {
-  query: { userId: fromUserId },
-});
-
 const Middle = (props) => {
   const [messages, setMessages] = useState([]);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('loggedInUser')); // Replace with actual logged-in user logic
+    const fromUserId = storedUser?.userId || 'vatsalrishabh001';
+
+    // Initialize socket
+    const newSocket = io('https://vht-backend.onrender.com', {
+      query: { userId: fromUserId },
+    });
+    setSocket(newSocket);
+
+    // Fetch messages
     const fetchMessages = async () => {
       try {
         const response = await axios.post(`${BaseUrl}/api/users/viewMessage`, {
           sender: fromUserId,
-          receiver: props.receiver, // Corrected typo
+          receiver: props.receiver,
         });
 
         if (response.data.success) {
-          setMessages(response.data.messages); // Set the messages from the response
-          console.log(response.data.messages+"middle messages");
-          console.log(response.data+"middle messages only dat");
+          setMessages(response.data.messages);
+          console.log(response.data.messages + ' middle messages');
+          console.log(response.data + ' middle messages only data');
         } else {
           console.error('Failed to fetch messages');
         }
@@ -37,15 +41,20 @@ const Middle = (props) => {
     };
 
     fetchMessages();
-  }, [fromUserId, props.receiver]); // Added dependency array
+
+    // Cleanup on component unmount
+    return () => {
+      if (newSocket) newSocket.disconnect();
+    };
+  }, [props.receiver]); // Added dependency array
 
   return (
     <div className="h-[80vh] overflow-y-scroll bg-transparent p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
       {/* Render messages */}
-      {messages.map((message) => (
-        message.sender === fromUserId ? (
+      {messages.map((message) =>
+        message.sender === props.sender ? (
           // If the message sender is the logged-in user
-          <Right 
+          <Right
             key={message._id}
             content={message.content}
             timestamp={message.timestamp}
@@ -54,7 +63,7 @@ const Middle = (props) => {
           />
         ) : (
           // If the message receiver is the logged-in user
-          <Left 
+          <Left
             key={message._id}
             content={message.content}
             timestamp={message.timestamp}
@@ -62,7 +71,7 @@ const Middle = (props) => {
             isDeleted={message.isDeleted}
           />
         )
-      ))}
+      )}
 
       {/* Typing indicator */}
       <Typing />
